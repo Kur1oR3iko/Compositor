@@ -8,6 +8,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Compositor (macOS 15+ Apple Silicon)
@@ -21,6 +24,12 @@ jobs:
         run: |
           xcodebuild -version
           swift --version
+
+      - name: Extract marketing version
+        run: |
+          VERSION=$(awk -F' = ' '/MARKETING_VERSION = /{print $2; exit}' Compositor.xcodeproj/project.pbxproj | tr -d '; ')
+          echo "VERSION=${VERSION:-1.5.2}" >> $GITHUB_ENV
+          echo "Building version: ${VERSION:-1.5.2}"
 
       - name: Resolve Swift Package Dependencies
         run: |
@@ -52,3 +61,28 @@ jobs:
           name: Compositor-macOS15-arm64
           path: DerivedData/Build/Products/Release/Compositor-macOS15-arm64.zip
           retention-days: 30
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}-macos15
+          name: Compositor ${{ env.VERSION }} for macOS 15 (Apple Silicon)
+          draft: false
+          prerelease: false
+          body: |
+            ## Compositor ${{ env.VERSION }} for macOS 15+ (Apple Silicon)
+
+            This release provides an Apple Silicon (`arm64`) native build of **Compositor ${{ env.VERSION }}**, backported to support **macOS 15 Sequoia** and later.
+
+            ### Requirements
+            - **OS:** macOS 15.0 or later
+            - **Chip:** Apple Silicon (M1, M2, M3, M4 series)
+
+            ### Installation
+            1. Download `Compositor-macOS15-arm64.zip` below.
+            2. Unzip and drag `Compositor.app` to your `/Applications` folder.
+            3. **First-time launch:** Right-click (Control-click) `Compositor.app` → select **Open** → click **Open** in the confirmation dialog.
+          files: |
+            DerivedData/Build/Products/Release/Compositor-macOS15-arm64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
