@@ -25,8 +25,8 @@ nonisolated enum MagicWand {
         case tooDetailed, memory
         var errorDescription: String? {
             switch self {
-            case .tooDetailed: "That selection is too detailed to outline. Try a different Tolerance, or turn on Contiguous."
-            case .memory: "There isn’t enough memory to make that selection."
+            case .tooDetailed: String(localized: "That selection is too detailed to outline. Try a different Tolerance, or turn on Contiguous.", bundle: L10n.bundle)
+            case .memory: String(localized: "There isn’t enough memory to make that selection.", bundle: L10n.bundle)
             }
         }
     }
@@ -116,9 +116,9 @@ extension EditorSession {
         // A traced outline already lies on the canvas, so a new selection skips the clip to
         // the canvas, which is costly for a detailed outline.
         if mode == .replace {
-            setSelection(DocumentSelection(path: path, antialiased: selectionAntialiased), name: "Magic Wand")
+            setSelection(DocumentSelection(path: path, antialiased: selectionAntialiased), name: String(localized: "Magic Wand", bundle: L10n.bundle))
         } else {
-            applySelection(path, mode: mode, name: "Magic Wand")
+            applySelection(path, mode: mode, name: String(localized: "Magic Wand", bundle: L10n.bundle))
         }
     }
 

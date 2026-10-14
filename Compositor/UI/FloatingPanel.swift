@@ -32,17 +32,19 @@ final class FloatingPanelController: NSObject, NSWindowDelegate {
         identifier = NSUserInterfaceItemIdentifier(name)
     }
 
-    func show(title: String, content: some View, placement: FloatingPanelPlacement = .automatic) {
+    func show(title: @autoclosure @escaping () -> String, content: some View, placement: FloatingPanelPlacement = .automatic) {
         self.placement = placement
         let panel = self.panel ?? makePanel()
         let wasVisible = panel.isVisible
         let topLeft = NSPoint(x: panel.frame.minX, y: panel.frame.maxY)
-        panel.title = title
+        panel.title = L10n.text(title())
         // A hosting *view* sized once, not a controller with `.preferredContentSize`:
         // that option makes AppKit measure the SwiftUI view during its constraint pass,
         // and SwiftUI's measurement invalidates layout re-entrantly, which AppKit treats
         // as a fatal exception.
-        let host = NSHostingView(rootView: AnyView(content.roundedControls()))
+        let host = NSHostingView(rootView: AnyView(content.roundedControls().localizedInterface(onChange: { [weak panel] in
+            panel?.title = L10n.text(title())
+        })))
         // Docked panels fill the window we size. An intrinsic SwiftUI height of zero (a scroll view
         // waiting for a proposed height) must not collapse the content.
         if placement == .dockedToMainWindowRight {

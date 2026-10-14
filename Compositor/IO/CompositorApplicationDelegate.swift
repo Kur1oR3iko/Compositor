@@ -79,7 +79,15 @@ final class CompositorApplicationDelegate: NSObject, NSApplicationDelegate {
         // added, before the menu is drawn.
         NotificationCenter.default.addObserver(forName: NSMenu.didAddItemNotification, object: nil, queue: nil) { note in
             guard let menu = note.object as? NSMenu, let index = note.userInfo?["NSMenuItemIndex"] as? Int else { return }
-            MainActor.assumeIsolated { Self.removeIfSystemExtra(at: index, in: menu) }
+            MainActor.assumeIsolated {
+                Self.removeIfSystemExtra(at: index, in: menu)
+                if menu === NSApp.mainMenu { Self.refreshMenuLanguage() }
+            }
+        }
+        NotificationCenter.default.addObserver(forName: NSMenu.didChangeItemNotification, object: nil, queue: nil) { note in
+            MainActor.assumeIsolated {
+                if let menu = note.object as? NSMenu, menu === NSApp.mainMenu { Self.refreshMenuLanguage() }
+            }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             do { try self?.updater.start() } catch { NSLog("Sparkle didn't start: \(error)") }
@@ -157,12 +165,32 @@ final class CompositorApplicationDelegate: NSObject, NSApplicationDelegate {
     /// Takes macOS's extras (text-typing items and Enter Full Screen) out of the menu bar's menus, found by what they do rather than their titles, so
     /// it holds in any language, then tidies the separators they leave behind.
     @MainActor static func removeSystemExtras() {
+        refreshMenuLanguage()
         for top in NSApp.mainMenu?.items ?? [] {
             guard let menu = top.submenu else { continue }
             let extras = menu.items.filter(isSystemExtra)
             guard !extras.isEmpty else { continue }
             extras.forEach(menu.removeItem)
             tidySeparators(menu)
+        }
+    }
+
+    /// AppKit owns the standard menu headings; updating their titles keeps their native actions and validation.
+    private static var isRefreshingMenuLanguage = false
+    @MainActor static func refreshMenuLanguage() {
+        guard !isRefreshingMenuLanguage else { return }
+        isRefreshingMenuLanguage = true
+        defer { isRefreshingMenuLanguage = false }
+        let keys = ["File", "Edit", "View", "Select", "Image", "Filter", "Layer", "Window", "Help"]
+        let systemTitles = ["文件": "File", "编辑": "Edit", "显示": "View", "视图": "View", "选择": "Select",
+                            "图像": "Image", "滤镜": "Filter", "图层": "Layer", "窗口": "Window", "帮助": "Help"]
+        for item in NSApp.mainMenu?.items ?? [] {
+            let key = systemTitles[item.title] ?? keys.first { item.title == $0 || item.title == L10n.text($0) }
+            if let key {
+                let title = L10n.text(key)
+                if item.title != title { item.title = title }
+                if item.submenu?.title != title { item.submenu?.title = title }
+            }
         }
     }
 

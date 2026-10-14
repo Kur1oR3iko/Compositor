@@ -10,7 +10,7 @@ struct CameraRawGeometryControls: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Upright").font(.subheadline)
             Picker("Upright", selection: uprightBinding) {
-                ForEach(CameraRawUprightMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CameraRawUprightMode.allCases, id: \.self) { Text(L10n.text($0.rawValue)).tag($0) }
             }
             .labelsHidden()
             .pickerStyle(.segmented)
@@ -36,16 +36,16 @@ struct CameraRawGeometryControls: View {
                 }
             }
             Picker("Projection", selection: binding(\.projection)) {
-                ForEach(CameraRawProjection.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CameraRawProjection.allCases, id: \.self) { Text(L10n.text($0.rawValue)).tag($0) }
             }
             .help("Perspective allows stronger keystone. Rectilinear keeps the warp gentler.")
-            geometrySlider("Vertical", \.vertical, help: "Straightens vertical lines toward the center.")
-            geometrySlider("Horizontal", \.horizontal, help: "Straightens horizontal lines toward the center.")
-            geometrySlider("Rotate", \.rotate, range: CameraRawGeometrySettings.rotateRange, help: "Rotates the picture around its center.")
-            geometrySlider("Aspect", \.aspect, help: "Stretches width relative to height.")
-            geometrySlider("Scale", \.scale, help: "Zooms the transformed picture within the frame.")
-            geometrySlider("Offset X", \.offsetX, help: "Moves the picture left or right.")
-            geometrySlider("Offset Y", \.offsetY, help: "Moves the picture up or down.")
+            geometrySlider(String(localized: "Vertical", bundle: L10n.bundle), \.vertical, help: String(localized: "Straightens vertical lines toward the center.", bundle: L10n.bundle))
+            geometrySlider(String(localized: "Horizontal", bundle: L10n.bundle), \.horizontal, help: String(localized: "Straightens horizontal lines toward the center.", bundle: L10n.bundle))
+            geometrySlider(String(localized: "Rotate", bundle: L10n.bundle), \.rotate, range: CameraRawGeometrySettings.rotateRange, help: String(localized: "Rotates the picture around its center.", bundle: L10n.bundle))
+            geometrySlider(String(localized: "Aspect", bundle: L10n.bundle), \.aspect, help: String(localized: "Stretches width relative to height.", bundle: L10n.bundle))
+            geometrySlider(String(localized: "Scale", bundle: L10n.bundle), \.scale, help: String(localized: "Zooms the transformed picture within the frame.", bundle: L10n.bundle))
+            geometrySlider(String(localized: "Offset X", bundle: L10n.bundle), \.offsetX, help: String(localized: "Moves the picture left or right.", bundle: L10n.bundle))
+            geometrySlider(String(localized: "Offset Y", bundle: L10n.bundle), \.offsetY, help: String(localized: "Moves the picture up or down.", bundle: L10n.bundle))
             Toggle("Constrain Crop", isOn: binding(\.constrainCrop))
                 .help("Crops empty edges after the transform and fits the result back into the frame.")
         }
@@ -66,17 +66,17 @@ struct CameraRawGeometryControls: View {
                                 range: ClosedRange<Double> = CameraRawGeometrySettings.toneRange, help: String) -> some View {
         let value = raw.geometry[keyPath: key]
         return HStack(spacing: 10) {
-            Text(title).frame(minWidth: CameraRawControls.labelWidth, alignment: .leading).help(help)
+            Text(L10n.text(title)).frame(minWidth: CameraRawControls.labelWidth, alignment: .leading).help(L10n.text(help))
                 .scrubbable(sensitivity: 1,
                             value: Binding(get: { raw.geometry[keyPath: key] },
                                            set: { newValue in update { $0.cameraRaw.geometry[keyPath: key] = newValue } }), range: range)
             CameraRawSlider(value: value, range: range, track: .plain, help: help,
                             onChange: { rawValue in update { $0.cameraRaw.geometry[keyPath: key] = rawValue.rounded() } },
                             onReset: { update { $0.cameraRaw.geometry[keyPath: key] = 0 } })
-            TextField(title, value: Binding(get: { raw.geometry[keyPath: key] },
+            TextField(L10n.text(title), value: Binding(get: { raw.geometry[keyPath: key] },
                                             set: { newValue in update { $0.cameraRaw.geometry[keyPath: key] = newValue } }),
                       format: .number.precision(.fractionLength(0)))
-                .frame(width: 56).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing).help(help)
+                .frame(width: 56).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing).help(L10n.text(help))
         }
     }
 
@@ -95,7 +95,7 @@ struct CameraRawCalibrationControls: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Picker("Process", selection: binding(\.process)) {
-                ForEach(CameraRawProcessVersion.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CameraRawProcessVersion.allCases, id: \.self) { Text(L10n.text($0.rawValue)).tag($0) }
             }
             .help("Chooses how strongly the calibration sliders below are applied. Version 6 is the current default.")
             Text(raw.calibration.process.summary)
@@ -104,16 +104,16 @@ struct CameraRawCalibrationControls: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .help(raw.calibration.process.summary)
             Text("Shadows").font(.subheadline)
-            calibrationSlider("Tint", \.shadowTint, help: "Adds green or magenta to the darkest tones.")
+            calibrationSlider(String(localized: "Tint", bundle: L10n.bundle), \.shadowTint, help: String(localized: "Adds green or magenta to the darkest tones.", bundle: L10n.bundle))
             Text("Red Primary").font(.subheadline)
-            calibrationSlider("Hue", \.redHue, help: "Shifts how red is interpreted.")
-            calibrationSlider("Saturation", \.redSaturation, help: "Strengthens or weakens the red primary.")
+            calibrationSlider(String(localized: "Hue", bundle: L10n.bundle), \.redHue, help: String(localized: "Shifts how red is interpreted.", bundle: L10n.bundle))
+            calibrationSlider(String(localized: "Saturation", bundle: L10n.bundle), \.redSaturation, help: String(localized: "Strengthens or weakens the red primary.", bundle: L10n.bundle))
             Text("Green Primary").font(.subheadline)
-            calibrationSlider("Hue", \.greenHue, help: "Shifts how green is interpreted.")
-            calibrationSlider("Saturation", \.greenSaturation, help: "Strengthens or weakens the green primary.")
+            calibrationSlider(String(localized: "Hue", bundle: L10n.bundle), \.greenHue, help: String(localized: "Shifts how green is interpreted.", bundle: L10n.bundle))
+            calibrationSlider(String(localized: "Saturation", bundle: L10n.bundle), \.greenSaturation, help: String(localized: "Strengthens or weakens the green primary.", bundle: L10n.bundle))
             Text("Blue Primary").font(.subheadline)
-            calibrationSlider("Hue", \.blueHue, help: "Shifts how blue is interpreted.")
-            calibrationSlider("Saturation", \.blueSaturation, help: "Strengthens or weakens the blue primary.")
+            calibrationSlider(String(localized: "Hue", bundle: L10n.bundle), \.blueHue, help: String(localized: "Shifts how blue is interpreted.", bundle: L10n.bundle))
+            calibrationSlider(String(localized: "Saturation", bundle: L10n.bundle), \.blueSaturation, help: String(localized: "Strengthens or weakens the blue primary.", bundle: L10n.bundle))
         }
     }
 
@@ -124,7 +124,7 @@ struct CameraRawCalibrationControls: View {
     private func calibrationSlider(_ title: String, _ key: WritableKeyPath<CameraRawCalibrationSettings, Double>, help: String) -> some View {
         let value = raw.calibration[keyPath: key]
         return HStack(spacing: 10) {
-            Text(title).frame(minWidth: CameraRawControls.labelWidth, alignment: .leading).help(help)
+            Text(L10n.text(title)).frame(minWidth: CameraRawControls.labelWidth, alignment: .leading).help(L10n.text(help))
                 .scrubbable(sensitivity: 1,
                             value: Binding(get: { raw.calibration[keyPath: key] },
                                            set: { newValue in update { $0.cameraRaw.calibration[keyPath: key] = newValue } }),
@@ -132,10 +132,10 @@ struct CameraRawCalibrationControls: View {
             CameraRawSlider(value: value, range: CameraRawCalibrationSettings.toneRange, track: .plain, help: help,
                             onChange: { rawValue in update { $0.cameraRaw.calibration[keyPath: key] = rawValue.rounded() } },
                             onReset: { update { $0.cameraRaw.calibration[keyPath: key] = 0 } })
-            TextField(title, value: Binding(get: { raw.calibration[keyPath: key] },
+            TextField(L10n.text(title), value: Binding(get: { raw.calibration[keyPath: key] },
                                             set: { newValue in update { $0.cameraRaw.calibration[keyPath: key] = newValue } }),
                       format: .number.precision(.fractionLength(0)))
-                .frame(width: 56).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing).help(help)
+                .frame(width: 56).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing).help(L10n.text(help))
         }
     }
 

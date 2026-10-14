@@ -50,6 +50,10 @@ jobs:
             ENABLE_CODE_COVERAGE=NO \
             MACOSX_DEPLOYMENT_TARGET=15.0
 
+      - name: Re-sign App and Frameworks deeply
+        run: |
+          codesign --force --deep --sign - DerivedData/Build/Products/Release/Compositor.app
+
       - name: Package App as Zip
         run: |
           cd DerivedData/Build/Products/Release

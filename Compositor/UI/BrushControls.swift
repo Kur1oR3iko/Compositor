@@ -4,26 +4,26 @@ struct BrushControls: View {
     @Bindable var session: EditorSession
     var body: some View {
         HStack(spacing: 12) {
-            Text(session.tool == .spotHealing ? "Spot Healing" : session.tool == .cloneStamp ? "Clone Stamp" : session.tool == .blur ? "Smear" : session.brushMode == .erase ? "Eraser" : "Brush").font(ToolHeaderStyle.titleFont)
+            Text(session.tool == .spotHealing ? String(localized: "Spot Healing", bundle: L10n.bundle) : session.tool == .cloneStamp ? String(localized: "Clone Stamp", bundle: L10n.bundle) : session.tool == .blur ? String(localized: "Smear", bundle: L10n.bundle) : session.brushMode == .erase ? String(localized: "Eraser", bundle: L10n.bundle) : String(localized: "Brush", bundle: L10n.bundle)).font(ToolHeaderStyle.titleFont)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
                     if session.tool == .brush {
                         Picker("Mode", selection: $session.brushMode) {
-                            ForEach(BrushToolMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                            ForEach(BrushToolMode.allCases, id: \.self) { Text(L10n.text($0.rawValue)).tag($0) }
                         }
                         .pickerStyle(.segmented).labelsHidden().fixedSize()
                         .help("Paint with the foreground color (B), or erase pixels away (E)")
                     }
                     if session.tool == .blur {
                         Picker("Mode", selection: $session.blurMode) {
-                            ForEach(BlurToolMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                            ForEach(BlurToolMode.allCases, id: \.self) { Text(L10n.text($0.rawValue)).tag($0) }
                         }
                         .pickerStyle(.segmented).labelsHidden().fixedSize()
                         .help("Liquify pushes pixels · Blur softens · Smudge drags color along")
                     }
                     if session.tool == .spotHealing {
-                        Picker("Type", selection: $session.spotHealingMode) {
-                            ForEach(SpotHealingMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                        Picker(String(localized: "Healing Type", defaultValue: "Type", bundle: L10n.bundle, comment: "Spot Healing method, not the text tool"), selection: $session.spotHealingMode) {
+                            ForEach(SpotHealingMode.allCases, id: \.self) { Text(L10n.text($0.rawValue)).tag($0) }
                         }
                         .pickerStyle(.segmented).labelsHidden().fixedSize()
                         .accessibilityIdentifier("spotHealingType")
@@ -48,7 +48,7 @@ struct BrushControls: View {
                     .onChange(of: session.brushSettings.diameter) { _, value in
                         session.brushSettings.diameter = value.isFinite ? min(2000, max(1, value)) : 40
                     }
-                    .unitSuffix("px")
+                    .unitSuffix(String(localized: "px", bundle: L10n.bundle))
                     Text("Hardness").scrubbable(sensitivity: 0.01, value: $session.brushSettings.hardness, range: 0...1)
                     Slider(value: $session.brushSettings.hardness, in: 0...1).frame(width: 100)
                     TextField("Hardness", value: Binding<Double>(get: { Double(session.brushSettings.hardness * 100) },
@@ -58,7 +58,7 @@ struct BrushControls: View {
                     .arrowSteps(value: { Double(session.brushSettings.hardness * 100) },
                                 change: { session.brushSettings.hardness = CGFloat(min(1, max(0, $0 / 100))) })
                     .unitSuffix("%")
-                    Text(session.tool == .blur ? "Strength" : "Opacity")
+                    Text(session.tool == .blur ? String(localized: "Strength", bundle: L10n.bundle) : String(localized: "Opacity", bundle: L10n.bundle))
                         .scrubbable(sensitivity: 0.01, value: $session.brushSettings.opacity, range: 0.01...1)
                     Slider(value: $session.brushSettings.opacity, in: 0.01...1).frame(width: 100)
                     TextField("Opacity", value: Binding<Double>(get: { Double(session.brushSettings.opacity * 100) },
@@ -82,7 +82,7 @@ struct BrushControls: View {
                         .arrowSteps(value: { Double(session.brushSettings.blurRadius) },
                                     change: { session.brushSettings.blurRadius = CGFloat(min(50, max(0.5, $0))) })
                         .help("How far the blur softens, in pixels")
-                        .unitSuffix("px")
+                        .unitSuffix(String(localized: "px", bundle: L10n.bundle))
                     }
                     // Paint and Erase only: healing, cloning and smearing have their own feel.
                     if session.tool == .brush {
@@ -117,7 +117,7 @@ struct BrushControls: View {
                             .buttonStyle(.plain)
                             .disabled(!session.canEditPalette)
                             .help("Foreground color")
-                            .accessibilityLabel("Foreground color")
+                            .accessibilityLabel(String(localized: "Foreground color", bundle: L10n.bundle))
                         }
                     }
                     Spacer(minLength: 0)

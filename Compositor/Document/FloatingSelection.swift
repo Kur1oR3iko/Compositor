@@ -39,15 +39,15 @@ extension EditorSession {
         beginEdit("Transform Selection")
         await clearSelectedPixels()
         let asset = lifted.image.bitsPerComponent > 8
-            ? try? DeepLayer.asset(lifted.image, name: "Floating Selection")
-            : (try? PixelInvert.thumbnail(of: lifted.image)).map { ImportedImage(image: lifted.image, thumbnail: $0, name: "Floating Selection") }
+            ? try? DeepLayer.asset(lifted.image, name: String(localized: "Floating Selection", bundle: L10n.bundle))
+            : (try? PixelInvert.thumbnail(of: lifted.image)).map { ImportedImage(image: lifted.image, thumbnail: $0, name: String(localized: "Floating Selection", bundle: L10n.bundle)) }
         guard let index = self.document?.layers.firstIndex(where: { $0.id == source.id }), let asset else {
             self.document = before
             endEdit()
             return
         }
         var floating = ImageLayer(asset: asset, origin: lifted.region.origin)
-        floating.name = "Floating Selection"
+        floating.name = String(localized: "Floating Selection", bundle: L10n.bundle)
         floating.parentID = source.parentID
         floating.opacity = source.opacity
         floating.blendMode = source.blendMode

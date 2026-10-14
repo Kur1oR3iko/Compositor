@@ -82,12 +82,12 @@ struct ExportAsSheet: View {
                 Spacer()
                 Button("Fit") { zoom = nil }.disabled(zoom == nil)
                     .help("Show the whole image (⌘0)")
-                Button { zoomBy(1) } label: { Image(systemName: "plus.magnifyingglass") }
-                    .disabled(JPEGPreview.step(from: shownZoom, in: 1) == nil)
-                    .help("Zoom in (⌘+), now \(percent). At 100% each pixel of the export is one pixel of the screen")
-                Button { zoomBy(-1) } label: { Image(systemName: "minus.magnifyingglass") }
-                    .disabled(JPEGPreview.step(from: shownZoom, in: -1) == nil)
-                    .help("Zoom out (⌘−), now \(percent)")
+                Button { zoomBy(1) } label: { Image(systemName: "plus.magnifyingglass").accessibilityHidden(true) }
+                    .accessibilityLabel(String(localized: "Zoom in", bundle: L10n.bundle)).disabled(JPEGPreview.step(from: shownZoom, in: 1) == nil)
+                    .help(String(localized: "Zoom in (⌘+), now \(percent). At 100% each pixel of the export is one pixel of the screen", bundle: L10n.bundle))
+                Button { zoomBy(-1) } label: { Image(systemName: "minus.magnifyingglass").accessibilityHidden(true) }
+                    .accessibilityLabel(String(localized: "Zoom out", bundle: L10n.bundle)).disabled(JPEGPreview.step(from: shownZoom, in: -1) == nil)
+                    .help(String(localized: "Zoom out (⌘−), now \(percent)", bundle: L10n.bundle))
             }
             .padding(.bottom, -8)
             ZStack {
@@ -168,15 +168,15 @@ struct ExportAsSheet: View {
                 if format == .jpeg || format == .pdf || (format == .tiff && cmyk) {
                     GridRow {
                         Text("Background")
-                        DialogColorSwatch(title: "Export Background", color: matte, session: session)
+                        DialogColorSwatch(title: String(localized: "Export Background", bundle: L10n.bundle), color: matte, session: session)
                             .help("Color that fills transparent areas")
                     }
                 }
             }
             HStack(spacing: 12) {
-                Text(format == .exr ? "Brighter than white kept · Transparency kept"
-                     : takesCMYK && cmyk ? "CMYK – \(profile?.name ?? "No profile")"
-                     : format == .png || format == .tiff ? "Transparency kept · sRGB" : "sRGB")
+                Text(format == .exr ? String(localized: "Brighter than white kept · Transparency kept", bundle: L10n.bundle)
+                     : takesCMYK && cmyk ? String(localized: "CMYK – \(profile?.name ?? String(localized: "No profile", bundle: L10n.bundle))", bundle: L10n.bundle)
+                     : format == .png || format == .tiff ? String(localized: "Transparency kept · sRGB", bundle: L10n.bundle) : "sRGB")
                     .foregroundStyle(.secondary)
                 Spacer()
                 if let error { Text(error).foregroundStyle(.red) }
@@ -253,7 +253,7 @@ struct ExportAsSheet: View {
     private func loadProfile() {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [UTType(filenameExtension: "icc") ?? .data, UTType(filenameExtension: "icm") ?? .data]
-        panel.message = "Choose a CMYK ICC profile, such as the one your printer gave you"
+        panel.message = String(localized: "Choose a CMYK ICC profile, such as the one your printer gave you", bundle: L10n.bundle)
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do { session.proofProfile = try CMYK.load(url) }
         catch { self.error = error.localizedDescription }
@@ -264,14 +264,14 @@ struct ExportAsSheet: View {
     @ViewBuilder private var moreFormats: some View {
         let others = formats.filter { $0 != .png && $0 != .jpeg }
         let chosen = others.contains(format)
-        let menu = Menu(chosen ? format.rawValue : "More") {
+        let menu = Menu(chosen ? format.rawValue : String(localized: "More", bundle: L10n.bundle)) {
             Picker("More formats", selection: $format) {
                 ForEach(others, id: \.self) { Text($0.rawValue).tag($0) }
             }
             .pickerStyle(.inline).labelsHidden()
         }
         .menuStyle(.button).fixedSize()
-        .help("Other formats: TIFF and PDF\(others.contains(.exr) ? ", and EXR to keep light brighter than white" : "")")
+        .help(others.contains(.exr) ? String(localized: "Other formats: TIFF and PDF, and EXR to keep light brighter than white", bundle: L10n.bundle) : String(localized: "Other formats: TIFF and PDF", bundle: L10n.bundle))
         if chosen { menu.buttonStyle(.borderedProminent) } else { menu.buttonStyle(.bordered) }
     }
 
@@ -294,7 +294,7 @@ struct ExportAsSheet: View {
     private var pageSize: String {
         let dpi = raster.resolution > 0 ? raster.resolution : 72
         let inches = { (pixels: Int) in (Double(pixels) / dpi).formatted(.number.precision(.fractionLength(0...2))) }
-        return "\(inches(width)) × \(inches(height)) in at \(Int(dpi.rounded())) DPI"
+        return String(localized: "\(inches(width)) × \(inches(height)) in at \(Int(dpi.rounded())) DPI", bundle: L10n.bundle)
     }
     private var percent: String { "\(Int((shownZoom * 100).rounded()))%" }
     private func zoomBy(_ direction: Int) {

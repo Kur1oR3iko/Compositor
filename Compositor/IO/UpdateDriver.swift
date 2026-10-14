@@ -21,18 +21,18 @@ import Sparkle
         let downloaded = state.stage != .notDownloaded
         let alert = NSAlert()
         alert.icon = NSApp.applicationIconImage
-        alert.messageText = "A new version of \(name) is available!"
+        alert.messageText = String(localized: "A new version of \(name) is available!", bundle: L10n.bundle)
         alert.informativeText = downloaded
-            ? "\(name) \(appcastItem.displayVersionString) is ready to install — you have \(current)."
-            : "\(name) \(appcastItem.displayVersionString) is now available — you have \(current). Would you like to download it now?"
+            ? String(localized: "\(name) \(appcastItem.displayVersionString) is ready to install — you have \(current).", bundle: L10n.bundle)
+            : String(localized: "\(name) \(appcastItem.displayVersionString) is now available — you have \(current). Would you like to download it now?", bundle: L10n.bundle)
         // Always set, even with nothing listed, so the alert is the same width every time.
         alert.accessoryView = Self.list(Self.changes(in: appcastItem))
-        alert.addButton(withTitle: downloaded ? "Install and Relaunch" : "Install Update")
-        alert.addButton(withTitle: "Remind Me Later")
-        alert.addButton(withTitle: "Skip This Version")
+        alert.addButton(withTitle: downloaded ? String(localized: "Install and Relaunch", bundle: L10n.bundle) : String(localized: "Install Update", bundle: L10n.bundle))
+        alert.addButton(withTitle: String(localized: "Remind Me Later", bundle: L10n.bundle))
+        alert.addButton(withTitle: String(localized: "Skip This Version", bundle: L10n.bundle))
         if let updater, updater.allowsAutomaticUpdates {
             alert.showsSuppressionButton = true
-            alert.suppressionButton?.title = "Automatically download and install updates in the future"
+            alert.suppressionButton?.title = String(localized: "Automatically download and install updates in the future", bundle: L10n.bundle)
             alert.suppressionButton?.state = updater.automaticallyDownloadsUpdates ? .on : .off
         }
         alert.layout()
@@ -118,11 +118,11 @@ import Sparkle
         style.headIndent = 12
         style.paragraphSpacing = 4
         style.tabStops = [NSTextTab(textAlignment: .left, location: 12)]
-        let text = NSMutableAttributedString(string: changes.isEmpty ? "" : "What’s new\n", attributes: [
+        let text = NSMutableAttributedString(string: changes.isEmpty ? "" : String(localized: "What’s new\n", bundle: L10n.bundle), attributes: [
             .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize, weight: .semibold),
             .foregroundColor: NSColor.labelColor, .paragraphStyle: style,
         ])
-        text.append(NSAttributedString(string: changes.map { "•\t\($0)" }.joined(separator: "\n"), attributes: [
+        text.append(NSAttributedString(string: changes.map { "•\t\(L10n.text($0))" }.joined(separator: "\n"), attributes: [
             .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
             .foregroundColor: NSColor.secondaryLabelColor, .paragraphStyle: style,
         ]))

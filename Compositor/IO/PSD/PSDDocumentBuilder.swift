@@ -27,7 +27,7 @@ nonisolated enum PSDDocumentBuilder {
         for record in document.layers {
             if record.croppedToCanvas {
                 conversions.append(PSDConversion(layerName: record.name,
-                                                 message: "Cropped to the canvas so the file fits in memory. Pixels outside the canvas weren't imported."))
+                                                 message: String(localized: "Cropped to the canvas so the file fits in memory. Pixels outside the canvas weren't imported.", bundle: L10n.bundle)))
             }
             let renderedText = record.text.flatMap { try? PSDText.render($0) }
             var notes: [String] = []
@@ -113,7 +113,7 @@ nonisolated enum PSDDocumentBuilder {
                let maskAsset = try? LayerMask.asset(from: maskImage) {
                 layer.mask = LayerMask(asset: maskAsset, isEnabled: record.maskEnabled, isLinked: record.maskLinked)
             } else if record.mask != nil {
-                conversions.append(PSDConversion(layerName: record.name, message: "The layer mask couldn’t be converted to 8-bit grayscale and was skipped."))
+                conversions.append(PSDConversion(layerName: record.name, message: String(localized: "The layer mask couldn’t be converted to 8-bit grayscale and was skipped.", bundle: L10n.bundle)))
             }
             layers.append(layer)
         }
@@ -127,7 +127,7 @@ nonisolated enum PSDDocumentBuilder {
                    !sourceLayer.isGroup, sourceLayer.adjustment == nil {
                     layers[index].maskSourceID = source
                 } else {
-                    conversions.append(PSDConversion(layerName: record.name, message: "This clipping mask’s base isn’t supported, so clipping was skipped."))
+                    conversions.append(PSDConversion(layerName: record.name, message: String(localized: "This clipping mask’s base isn’t supported, so clipping was skipped.", bundle: L10n.bundle)))
                 }
             } else if let layer = idToIndex[record.id].map({ layers[$0] }), !layer.isGroup, layer.adjustment == nil {
                 baseForParent[record.parentID] = record.id

@@ -9,7 +9,7 @@ struct NavigationToolHeader: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(session.tool == .hand ? "Pan" : "Zoom").font(ToolHeaderStyle.titleFont)
+            Text(session.tool == .hand ? String(localized: "Pan", bundle: L10n.bundle) : String(localized: "Zoom", bundle: L10n.bundle)).font(ToolHeaderStyle.titleFont)
             if session.tool == .zoom {
                 TextField("Zoom", text: $zoomText)
                     .textFieldStyle(.roundedBorder)
@@ -22,7 +22,7 @@ struct NavigationToolHeader: View {
                     .arrowSteps(editing: editingZoom, stepper: stepper,
                                 value: { Double(zoomText.filter { $0.isNumber || $0 == "." }) ?? Double(session.viewport.zoom * 100) },
                                 change: { step($0) })
-                    .accessibilityLabel("Zoom percentage")
+                    .accessibilityLabel(String(localized: "Zoom percentage", bundle: L10n.bundle))
                     .help("Zoom percentage (0.1–3200%). Press Return to apply.")
                     .disabled(session.document == nil || session.showsBusy)
                     .unitSuffix("%", scrubValue: Binding<Double>(

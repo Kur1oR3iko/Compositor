@@ -177,10 +177,10 @@ extension CommandPaletteEntry {
         let canAdd = session.canEditMask && session.activeLayer?.mask == nil
         let selected = session.selection != nil
         return [
-            CommandPaletteEntry(id: selected ? "Layer › Add Layer Mask from Selection" : "Layer › Add Layer Mask",
+            CommandPaletteEntry(id: selected ? String(localized: "Layer › Add Layer Mask from Selection", bundle: L10n.bundle) : String(localized: "Layer › Add Layer Mask", bundle: L10n.bundle),
                                 shortcut: nil, isEnabled: canAdd,
                                 perform: { [weak session] in session?.addMask(revealing: true) }),
-            CommandPaletteEntry(id: selected ? "Layer › Add Layer Mask Hiding Selection" : "Layer › Add Layer Mask (Hide All)",
+            CommandPaletteEntry(id: selected ? String(localized: "Layer › Add Layer Mask Hiding Selection", bundle: L10n.bundle) : String(localized: "Layer › Add Layer Mask (Hide All)", bundle: L10n.bundle),
                                 shortcut: nil, isEnabled: canAdd,
                                 perform: { [weak session] in session?.addMask(revealing: false) }),
         ]
@@ -193,32 +193,32 @@ extension CommandPaletteEntry {
     static func tools(for session: EditorSession) -> [CommandPaletteEntry] {
         typealias Setup = @MainActor (EditorSession) -> Void
         let tools: [(String, String, NavigationTool, Setup?)] = [
-            ("Move / Transform", "V", .move, nil),
-            ("Rectangular Marquee", "M", .marquee, { $0.marqueeKind = .rectangle }),
-            ("Elliptical Marquee", "M", .marquee, { $0.marqueeKind = .ellipse }),
-            ("Lasso", "L", .lasso, { $0.lassoKind = .freehand }),
-            ("Polygonal Lasso", "L", .lasso, { $0.lassoKind = .polygonal }),
-            ("Magic Wand", "W", .wand, { $0.wandMode = .wand }),
-            ("Object Selection", "W", .wand, { $0.wandMode = .object }),
-            ("Crop", "C", .crop, nil),
-            ("Brush", "B", .brush, { $0.brushMode = .paint }),
-            ("Eraser", "E", .brush, { $0.brushMode = .erase }),
-            ("Spot Healing Brush", "J", .spotHealing, nil),
-            ("Clone Stamp", "S", .cloneStamp, nil),
-            ("Liquify", "R", .blur, { $0.blurMode = .liquify }),
-            ("Blur", "R", .blur, { $0.blurMode = .blur }),
-            ("Smudge", "R", .blur, { $0.blurMode = .smudge }),
-            ("Gradient", "G", .gradient, nil),
-            ("Rectangle", "U", .shape, { $0.shapeKind = .rectangle }),
-            ("Ellipse", "U", .shape, { $0.shapeKind = .ellipse }),
-            ("Line", "U", .shape, { $0.shapeKind = .line }),
-            ("Type", "T", .type, nil),
-            ("Eyedropper", "I", .eyedropper, nil),
-            ("Hand", "H", .hand, nil),
-            ("Zoom", "Z", .zoom, nil),
+            (String(localized: "Move / Transform", bundle: L10n.bundle), "V", .move, nil),
+            (String(localized: "Rectangular Marquee", bundle: L10n.bundle), "M", .marquee, { $0.marqueeKind = .rectangle }),
+            (String(localized: "Elliptical Marquee", bundle: L10n.bundle), "M", .marquee, { $0.marqueeKind = .ellipse }),
+            (String(localized: "Lasso", bundle: L10n.bundle), "L", .lasso, { $0.lassoKind = .freehand }),
+            (String(localized: "Polygonal Lasso", bundle: L10n.bundle), "L", .lasso, { $0.lassoKind = .polygonal }),
+            (String(localized: "Magic Wand", bundle: L10n.bundle), "W", .wand, { $0.wandMode = .wand }),
+            (String(localized: "Object Selection", bundle: L10n.bundle), "W", .wand, { $0.wandMode = .object }),
+            (String(localized: "Crop", bundle: L10n.bundle), "C", .crop, nil),
+            (String(localized: "Brush", bundle: L10n.bundle), "B", .brush, { $0.brushMode = .paint }),
+            (String(localized: "Eraser", bundle: L10n.bundle), "E", .brush, { $0.brushMode = .erase }),
+            (String(localized: "Spot Healing Brush", bundle: L10n.bundle), "J", .spotHealing, nil),
+            (String(localized: "Clone Stamp", bundle: L10n.bundle), "S", .cloneStamp, nil),
+            (String(localized: "Liquify", bundle: L10n.bundle), "R", .blur, { $0.blurMode = .liquify }),
+            (String(localized: "Blur", bundle: L10n.bundle), "R", .blur, { $0.blurMode = .blur }),
+            (String(localized: "Smudge", bundle: L10n.bundle), "R", .blur, { $0.blurMode = .smudge }),
+            (String(localized: "Gradient", bundle: L10n.bundle), "G", .gradient, nil),
+            (String(localized: "Rectangle", bundle: L10n.bundle), "U", .shape, { $0.shapeKind = .rectangle }),
+            (String(localized: "Ellipse", bundle: L10n.bundle), "U", .shape, { $0.shapeKind = .ellipse }),
+            (String(localized: "Line", bundle: L10n.bundle), "U", .shape, { $0.shapeKind = .line }),
+            (String(localized: "Type", bundle: L10n.bundle), "T", .type, nil),
+            (String(localized: "Eyedropper", bundle: L10n.bundle), "I", .eyedropper, nil),
+            (String(localized: "Hand", bundle: L10n.bundle), "H", .hand, nil),
+            (String(localized: "Zoom", bundle: L10n.bundle), "Z", .zoom, nil),
         ]
         return tools.map { name, key, tool, setup in
-            CommandPaletteEntry(id: "Tool › \(name)", shortcut: key, isEnabled: session.document != nil,
+            CommandPaletteEntry(id: String(localized: "Tool › \(name)", bundle: L10n.bundle), shortcut: key, isEnabled: session.document != nil,
                                 perform: { [weak session] in
                                     guard let session else { return }
                                     session.selectTool(tool)

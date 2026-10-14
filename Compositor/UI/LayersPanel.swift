@@ -23,9 +23,9 @@ struct LayersPanel: View {
                 NativeLayerList(session: session)
             } else {
                 VStack(spacing: 10) {
-                    Image(systemName: "square.3.layers.3d").font(.system(size: 25, weight: .light))
+                    Image(systemName: "square.3.layers.3d").accessibilityHidden(true).font(.system(size: 25, weight: .light))
                     Text("No layers yet").font(.callout.weight(.medium))
-                    Text(session.document == nil ? "Create a canvas or import an image." : "Import an image or add a blank layer.")
+                    Text(session.document == nil ? String(localized: "Create a canvas or import an image.", bundle: L10n.bundle) : String(localized: "Import an image or add a blank layer.", bundle: L10n.bundle))
                         .font(.caption).multilineTextAlignment(.center)
                 }
                 .foregroundStyle(.secondary).padding(16)
@@ -35,29 +35,29 @@ struct LayersPanel: View {
             // No spacing: each button's hit area supplies it (8 pt either side makes the 16 pt gap).
             HStack(spacing: 0) {
                 Button { session.addBlankLayer() } label: { FooterIcon(systemName: "plus.square") }
-                    .help("New blank layer (⇧⌘N)").accessibilityLabel("New blank layer")
+                    .help("New blank layer (⇧⌘N)").accessibilityLabel(String(localized: "New blank layer", bundle: L10n.bundle))
                     .accessibilityIdentifier("addBlankLayer").disabled(!session.layersLookEditable)
                 Button { session.groupSelectedLayers() } label: { FooterIcon(systemName: "folder.badge.plus") }
-                    .help("Group selected layers (⌘G)").accessibilityLabel("New folder").disabled(!session.layersLookEditable)
+                    .help("Group selected layers (⌘G)").accessibilityLabel(String(localized: "New folder", bundle: L10n.bundle)).disabled(!session.layersLookEditable)
                 LayerMaskMenu(session: session)
                 Menu {
                     ForEach(AdjustmentKind.allCases, id: \.self) { kind in
-                        Button(kind.rawValue) { session.addAdjustment(kind) }
+                        Button(L10n.text(kind.rawValue)) { session.addAdjustment(kind) }
                     }
-                } label: { Image(systemName: "circle.lefthalf.filled").footerHitArea() }
-                    .menuStyle(.borderlessButton).fixedSize().help("New adjustment layer").disabled(!session.layersLookEditable)
+                } label: { Image(systemName: "circle.lefthalf.filled").accessibilityHidden(true).footerHitArea() }
+                    .menuStyle(.borderlessButton).fixedSize().accessibilityLabel(String(localized: "New adjustment layer", bundle: L10n.bundle)).help("New adjustment layer").disabled(!session.layersLookEditable)
                 Menu {
                     ForEach(LayerEffectKind.allCases, id: \.self) { kind in
-                        Button(kind.rawValue + "…") { session.addEffect(kind) }
+                        Button(L10n.text(kind.rawValue) + "…") { session.addEffect(kind) }
                     }
-                } label: { Image(systemName: "sparkles").footerHitArea() }
+                } label: { Image(systemName: "sparkles").accessibilityHidden(true).footerHitArea() }
                     .menuStyle(.borderlessButton).fixedSize()
-                    .help("Add layer effect").accessibilityLabel("Layer effects")
+                    .help("Add layer effect").accessibilityLabel(String(localized: "Layer effects", bundle: L10n.bundle))
                     .accessibilityIdentifier("layerEffects").disabled(!session.layersLookEditable || session.activeLayer?.isGroup != false || session.activeLayer?.asset == nil)
                 Spacer()
                 Button { session.deleteLayerOrMask() } label: { FooterIcon(systemName: "trash") }
-                    .help(session.selectedEffect != nil ? "Delete selected effect" : session.isMaskSelected ? "Delete layer mask" : session.selectedLayerIDs.count > 1 ? "Delete selected layers" : "Delete selected layer")
-                    .accessibilityLabel(session.selectedEffect != nil ? "Delete selected effect" : session.isMaskSelected ? "Delete layer mask" : session.selectedLayerIDs.count > 1 ? "Delete selected layers" : "Delete selected layer")
+                    .help(session.selectedEffect != nil ? String(localized: "Delete selected effect", bundle: L10n.bundle) : session.isMaskSelected ? String(localized: "Delete layer mask", bundle: L10n.bundle) : session.selectedLayerIDs.count > 1 ? String(localized: "Delete selected layers", bundle: L10n.bundle) : String(localized: "Delete selected layer", bundle: L10n.bundle))
+                    .accessibilityLabel(session.selectedEffect != nil ? String(localized: "Delete selected effect", bundle: L10n.bundle) : session.isMaskSelected ? String(localized: "Delete layer mask", bundle: L10n.bundle) : session.selectedLayerIDs.count > 1 ? String(localized: "Delete selected layers", bundle: L10n.bundle) : String(localized: "Delete selected layer", bundle: L10n.bundle))
                     .accessibilityIdentifier("deleteLayer")
                     .disabled(!session.layersLookEditable || session.activeLayer == nil)
             }
@@ -83,6 +83,7 @@ struct FooterIcon: View {
         // Disabled, as dim as the menus' icons (a quarter-strength white, measured): SwiftUI halves a disabled
         // button's own color again, so the button asks for half-strength white.
         Image(systemName: systemName)
+            .accessibilityHidden(true)
             .foregroundStyle(isEnabled ? AnyShapeStyle(.primary) : AnyShapeStyle(Color.white.opacity(0.5)))
             .footerHitArea()
     }

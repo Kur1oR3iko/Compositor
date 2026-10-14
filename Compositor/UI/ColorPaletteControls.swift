@@ -22,7 +22,7 @@ struct ColorPaletteControls: View {
             .foregroundStyle(.secondary)
             .offset(x: swatchSize + 3, y: -3)
             .help("Swap foreground and background (X)")
-            .accessibilityLabel("Swap colors")
+            .accessibilityLabel(String(localized: "Swap colors", bundle: L10n.bundle))
             Button { session.resetPaletteColors() } label: {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 7.5, weight: .medium))
@@ -33,13 +33,13 @@ struct ColorPaletteControls: View {
             .foregroundStyle(.secondary)
             .offset(x: -1, y: swatchSize + 3)
             .help("Default colors (D)")
-            .accessibilityLabel("Default colors")
+            .accessibilityLabel(String(localized: "Default colors", bundle: L10n.bundle))
         }
         .frame(width: swatchSize + swatchOffset, height: swatchSize + swatchOffset, alignment: .topLeading)
         .disabled(!session.canEditPalette)
         .popover(isPresented: Binding(get: { choosingMaskBackground != nil }, set: { if !$0 { choosingMaskBackground = nil } })) {
             VStack(alignment: .leading, spacing: 12) {
-                Text(choosingMaskBackground == true ? "Mask background" : "Mask foreground").font(.headline)
+                Text(choosingMaskBackground == true ? String(localized: "Mask background", bundle: L10n.bundle) : String(localized: "Mask foreground", bundle: L10n.bundle)).font(.headline)
                 HStack {
                     Button("Black · Hide") { chooseMask(.black) }
                     Button("White · Reveal") { chooseMask(.white) }
@@ -56,7 +56,7 @@ struct ColorPaletteControls: View {
         }
     }
     private func swatch(background: Bool) -> some View {
-        let label = background ? "Background color" : "Foreground color"
+        let label = background ? String(localized: "Background color", bundle: L10n.bundle) : String(localized: "Foreground color", bundle: L10n.bundle)
         let shape = RoundedRectangle(cornerRadius: 6, style: .continuous)
         return Button {
             if session.isMaskSelected { choosingMaskBackground = background }

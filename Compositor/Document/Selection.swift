@@ -226,7 +226,7 @@ extension EditorSession {
             return
         }
         applySelection(outline, mode: draft.mode,
-                       name: draft.kind == .freehand ? "Lasso" : draft.kind == .polygonal ? "Polygonal Lasso"
+                       name: draft.kind == .freehand ? String(localized: "Lasso", bundle: L10n.bundle) : draft.kind == .polygonal ? String(localized: "Polygonal Lasso", bundle: L10n.bundle)
                            : draft.kind == .ellipse ? "Elliptical Marquee" : "Rectangular Marquee")
     }
 
@@ -314,11 +314,11 @@ extension EditorSession {
     }
 
     /// Grows the outline by `amount` pixels with rounded corners (Photoshop's Expand), clipped to the canvas.
-    func expandSelection(by amount: Int) { resizeSelection(by: CGFloat(amount), name: "Expand Selection") }
+    func expandSelection(by amount: Int) { resizeSelection(by: CGFloat(amount), name: String(localized: "Expand Selection", bundle: L10n.bundle)) }
 
     /// Shrinks the outline by `amount` pixels, including away from the canvas edges.
     /// Contracting past the middle leaves an explicit empty selection.
-    func contractSelection(by amount: Int) { resizeSelection(by: -CGFloat(amount), name: "Contract Selection") }
+    func contractSelection(by amount: Int) { resizeSelection(by: -CGFloat(amount), name: String(localized: "Contract Selection", bundle: L10n.bundle)) }
 
     /// Softens the current selection's edge by `amount` pixels, as Select → Modify → Feather does. Applying it
     /// again softens further, the way Expand and Contract stack up.
@@ -327,7 +327,7 @@ extension EditorSession {
         // Two soft edges together spread a little less than their sum, as blurs do.
         let softened = (current.feather * current.feather + CGFloat(amount) * CGFloat(amount)).squareRoot()
         setSelection(DocumentSelection(path: current.path, antialiased: current.antialiased,
-                                       feather: min(250, softened)), name: "Feather Selection")
+                                       feather: min(250, softened)), name: String(localized: "Feather Selection", bundle: L10n.bundle))
     }
 
     private func resizeSelection(by delta: CGFloat, name: String) {
@@ -343,12 +343,12 @@ extension EditorSession {
 
     func selectAll() {
         guard let document else { return }
-        setSelection(DocumentSelection(path: CGPath(rect: CGRect(origin: .zero, size: document.size), transform: nil)), name: "Select All")
+        setSelection(DocumentSelection(path: CGPath(rect: CGRect(origin: .zero, size: document.size), transform: nil)), name: String(localized: "Select All", bundle: L10n.bundle))
     }
 
     func deselect() {
         guard selection != nil else { return }
-        setSelection(nil, name: "Deselect")
+        setSelection(nil, name: String(localized: "Deselect", bundle: L10n.bundle))
     }
 
     func invertSelection() {
@@ -358,6 +358,6 @@ extension EditorSession {
                                         feather: current.feather)
         // The inverse of everything is no selection at all, as in Photoshop — not an invisible empty one that
         // quietly stops every brush.
-        setSelection(inverse.isEmpty ? nil : inverse, name: "Inverse")
+        setSelection(inverse.isEmpty ? nil : inverse, name: String(localized: "Inverse", bundle: L10n.bundle))
     }
 }

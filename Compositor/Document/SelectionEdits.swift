@@ -59,7 +59,7 @@ extension EditorSession {
         let color = isMaskSelected
             ? CGColor(gray: value.red, alpha: 1)
             : CGColor(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!, components: [value.red, value.green, value.blue, 1])!
-        await applyPixelEdit(to: layer, name: isMaskSelected ? "Fill Mask" : "Fill") { try $0.fill(color) }
+        await applyPixelEdit(to: layer, name: isMaskSelected ? String(localized: "Fill Mask", bundle: L10n.bundle) : String(localized: "Fill", bundle: L10n.bundle)) { try $0.fill(color) }
     }
 
     /// Delete with a selection: image pixels become transparent; on a mask the
@@ -204,7 +204,7 @@ extension EditorSession {
             let moved = move.movedSelection
             do {
                 try move.applyOffset()
-                try await commitRasterEdit(move.raster, name: move.duplicate ? "Duplicate Pixels" : "Move Pixels") { self.document?.selection = moved }
+                try await commitRasterEdit(move.raster, name: move.duplicate ? String(localized: "Duplicate Pixels", bundle: L10n.bundle) : String(localized: "Move Pixels", bundle: L10n.bundle)) { self.document?.selection = moved }
             } catch { brushError = error.localizedDescription }
         }
         pixelMove = nil

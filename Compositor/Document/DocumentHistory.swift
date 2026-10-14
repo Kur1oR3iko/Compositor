@@ -33,8 +33,8 @@ final class DocumentHistory {
 
     var canUndo: Bool { depth == 0 && !past.isEmpty }
     var canRedo: Bool { depth == 0 && !future.isEmpty }
-    var undoName: String { past.last?.name ?? "" }
-    var redoName: String { future.last?.name ?? "" }
+    var undoName: String { L10n.text(past.last?.name ?? "") }
+    var redoName: String { L10n.text(future.last?.name ?? "") }
     var isModified: Bool { revision != savedRevision }
     var undoCount: Int { past.count }
     func markSaved() { savedRevision = revision }

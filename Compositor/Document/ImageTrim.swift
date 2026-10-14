@@ -45,9 +45,9 @@ public enum TrimError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .noContentToTrim:
-            return "No content remained after trimming."
+            return String(localized: "No content remained after trimming.", bundle: L10n.bundle)
         case .invalidDimensions:
-            return "The trimmed image dimensions are invalid."
+            return String(localized: "The trimmed image dimensions are invalid.", bundle: L10n.bundle)
         }
     }
 }

@@ -274,13 +274,13 @@ enum ColorPickerTarget: Equatable {
     case dialog(title: String)
     var title: String {
         switch self {
-        case .text: return "Color Picker (Text Color)"
-        case .effect(let kind): return "Color Picker (\(kind.rawValue) Color)"
-        case .palette(let background): return background ? "Color Picker (Background Color)" : "Color Picker (Foreground Color)"
-        case .gradientMap(let highlights): return highlights ? "Color Picker (Gradient Map Highlights)" : "Color Picker (Gradient Map Shadows)"
-        case .vignette: return "Color Picker (Vignette Color)"
-        case .dither(let light): return light ? "Color Picker (Light Color)" : "Color Picker (Dark Color)"
-        case .dialog(let title): return "Color Picker (\(title))"
+        case .text: return String(localized: "Color Picker (Text Color)", bundle: L10n.bundle)
+        case .effect(let kind): return String(localized: "Color Picker (\(L10n.text(kind.rawValue)) Color)", bundle: L10n.bundle)
+        case .palette(let background): return background ? String(localized: "Color Picker (Background Color)", bundle: L10n.bundle) : String(localized: "Color Picker (Foreground Color)", bundle: L10n.bundle)
+        case .gradientMap(let highlights): return highlights ? String(localized: "Color Picker (Gradient Map Highlights)", bundle: L10n.bundle) : String(localized: "Color Picker (Gradient Map Shadows)", bundle: L10n.bundle)
+        case .vignette: return String(localized: "Color Picker (Vignette Color)", bundle: L10n.bundle)
+        case .dither(let light): return light ? String(localized: "Color Picker (Light Color)", bundle: L10n.bundle) : String(localized: "Color Picker (Dark Color)", bundle: L10n.bundle)
+        case .dialog(let title): return String(localized: "Color Picker (\(title))", bundle: L10n.bundle)
         }
     }
 }

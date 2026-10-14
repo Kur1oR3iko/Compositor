@@ -220,10 +220,10 @@ extension EditorSession {
                     let result = try DeepLayer.run(deep) { half in
                         try LevelsFilter.run(LevelsJob(image: half, settings: job.settings, selection: job.selection, mapping: job.mapping))
                     }
-                    return try DeepLayer.asset(result, name: "Levels")
+                    return try DeepLayer.asset(result, name: String(localized: "Levels", bundle: L10n.bundle))
                 }
                 let image = try LevelsFilter.run(job)
-                return ImportedImage(image: image, thumbnail: try PixelAdjust.thumbnail(of: image), name: "Levels")
+                return ImportedImage(image: image, thumbnail: try PixelAdjust.thumbnail(of: image), name: String(localized: "Levels", bundle: L10n.bundle))
             }.value
             guard let index = document?.layers.firstIndex(where: { $0.id == edit.layerID }),
                   let current = document?.layers[index], current.asset?.image === edit.original.image,

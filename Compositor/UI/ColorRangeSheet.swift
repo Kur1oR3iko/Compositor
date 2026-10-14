@@ -15,13 +15,13 @@ struct ColorRangeSheet: View {
                         .background(edit?.effectiveMode == mode ? Color.accentColor.opacity(0.25) : .clear,
                                     in: RoundedRectangle(cornerRadius: 4))
                         .help(help(mode))
-                        .accessibilityLabel("\(mode.rawValue) color")
+                        .accessibilityLabel(String(localized: "\(L10n.text(mode.rawValue)) color", bundle: L10n.bundle))
                 }
                 Spacer()
             }
             preview
-            Text(edit?.hasColors == true ? "Shift-click adds a color, Option-click takes one away."
-                                         : "Click the image to pick the color to select.")
+            Text(edit?.hasColors == true ? String(localized: "Shift-click adds a color, Option-click takes one away.", bundle: L10n.bundle)
+                                         : String(localized: "Click the image to pick the color to select.", bundle: L10n.bundle))
                 .font(.callout).foregroundStyle(.secondary)
             HStack(spacing: 10) {
                 Text("Fuzziness").fixedSize()
@@ -72,9 +72,9 @@ struct ColorRangeSheet: View {
 
     private func help(_ mode: HueSampleMode) -> String {
         switch mode {
-        case .replace: "Click the image to select that color"
-        case .add: "Click the image to add that color to the selection"
-        case .remove: "Click the image to take that color out of the selection"
+        case .replace: String(localized: "Click the image to select that color", bundle: L10n.bundle)
+        case .add: String(localized: "Click the image to add that color to the selection", bundle: L10n.bundle)
+        case .remove: String(localized: "Click the image to take that color out of the selection", bundle: L10n.bundle)
         }
     }
 

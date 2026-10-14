@@ -186,5 +186,5 @@ nonisolated enum CMYK {
 
 nonisolated enum CMYKError: LocalizedError {
     case notCMYK
-    var errorDescription: String? { "That profile isn’t a CMYK output profile." }
+    var errorDescription: String? { String(localized: "That profile isn’t a CMYK output profile.", bundle: L10n.bundle) }
 }
