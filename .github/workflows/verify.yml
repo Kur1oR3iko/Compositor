@@ -1,7 +1,6 @@
 name: Verify
 
 on:
-  push:
   pull_request:
   # Weekly, and by hand from the Actions tab, every suite runs, the filter suites included.
   schedule:

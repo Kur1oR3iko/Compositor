@@ -1,0 +1,54 @@
+name: Build for macOS 15
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build Compositor (macOS 15+ Apple Silicon)
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Resolve Swift Package Dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project Compositor.xcodeproj \
+            -scheme Compositor
+
+      - name: Build Release (arm64)
+        run: |
+          xcodebuild build \
+            -project Compositor.xcodeproj \
+            -scheme Compositor \
+            -destination 'platform=macOS,arch=arm64' \
+            -configuration Release \
+            -derivedDataPath DerivedData \
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGNING_REQUIRED=NO \
+            ENABLE_CODE_COVERAGE=NO \
+            MACOSX_DEPLOYMENT_TARGET=15.0
+
+      - name: Package App as Zip
+        run: |
+          cd DerivedData/Build/Products/Release
+          ditto -c -k --keepParent Compositor.app Compositor-macOS15-arm64.zip
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Compositor-macOS15-arm64
+          path: DerivedData/Build/Products/Release/Compositor-macOS15-arm64.zip
+          retention-days: 30
