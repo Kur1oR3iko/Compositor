@@ -74,38 +74,29 @@ jobs:
           draft: false
           prerelease: false
           body: |
-            ## Compositor ${{ env.VERSION }} 原生中文版（支持 macOS 15+ / Apple Silicon）
+            ## Compositor ${{ env.VERSION }} 简体中文版 (macOS 15 / Apple Silicon)
 
-            Compositor 是一款专为 Mac 打造的高性能开源图像处理与合成软件，旨在成为 **Adobe Photoshop 的免费、轻量、现代化替代品**。
+            本项目基于 Robbie Tilton 开源的图像编辑软件 Compositor（遵循 MIT 许可证）。
 
-            本版本为 **macOS 15 Sequoia 及更高版本（Apple Silicon M 系列芯片）** 的专门适配汉化版。
+            原版 Compositor 官方目前面向 macOS 26 及以上系统。本仓库提供了针对 macOS 15（Sequoia）的向下兼容适配，并集成了简体中文本地化。
 
-            ---
+            ### 主要改动
 
-            ### ✨ 本版本特性
+            1. 系统兼容：降低部署目标至 macOS 15.0，对新系统特有的工具栏与控件 API 做了兼容回退，支持在搭载 Apple Silicon 芯片（M1 - M4）且运行 macOS 15 的设备上正常运行。
+            2. 简体中文：集成社区提供的简体中文本地化（参考 PR #274 by Inefy-03），翻译了工具、图层、混合模式、Camera Raw 调色面板和快捷键等界面内容，并保留应用内语言切换选项。
+            3. 签名修复：调整了 entitlements 配置并补充递归签名，避免 Sparkle 等动态库在非官方签名环境下因 Team ID 校验失败而闪退。
 
-            - 🇨🇳 **全面深度中文化**：集成完整简体中文汉化包（1300+ 词条），覆盖菜单、工具箱、图层面板、混合模式、Camera Raw 调色、滤镜及快捷键；
-            - 🌐 **内置多语言切换**：支持在应用内自由切换「跟随系统」、「English」与「简体中文」；
-            - ⚡️ **向下兼容 macOS 15**：解除原版对 macOS 26 的系统限制，支持 macOS 15.0+ 运行；
-            - 🚀 **Apple Silicon 原生加速**：基于 Metal GPU 硬件渲染管线优化，完美支持 M1 / M2 / M3 / M4 系列 Mac；
-            - 🛡️ **安全加固**：预置动态库签名隔离策略，彻底解决第三方运行时崩溃问题。
+            ### 运行说明
 
-            ---
+            1. 下载下方的 Compositor-macOS15-arm64.zip 并解压。
+            2. 将 Compositor.app 拖入「应用程序」文件夹。
+            3. 由于属于个人开源构建，未购买商业开发者证书，首次启动需右键（或按住 Control 点击）Compositor.app 选择「打开」，并在弹窗中确认一次即可。
 
-            ### 🖥️ 系统与硬件要求
+            ### 致谢与开源协议
 
-            - **操作系统**：macOS 15.0 或更高版本
-            - **硬件芯片**：Apple Silicon（M1 / M2 / M3 / M4 系列芯片）
-
-            ---
-
-            ### 📦 安装与首次启动指引
-
-            1. 点击下方附件直接下载 **`Compositor-macOS15-arm64.zip`**；
-            2. 双击解压后，将 **`Compositor.app`** 拖移至访达中的 **`/Applications`（应用程序）** 文件夹；
-            3. **首次打开方式**：
-               - 由于本版本为开源自编译版本（无商业付费证书），首次打开时请 **按住 Control 键点击应用（或右键）选择「打开」**；
-               - 在弹出的系统安全确认对话框中点击 **「打开」** 即可。之后便可直接双击正常启动。
+            - 原项目：https://github.com/robbietilton/Compositor
+            - 原作者：Robbie Tilton
+            - 遵循原项目的 MIT 许可证。
           files: |
             DerivedData/Build/Products/Release/Compositor-macOS15-arm64.zip
         env:
