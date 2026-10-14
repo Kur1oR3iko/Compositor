@@ -92,11 +92,13 @@ jobs:
             2. 将 Compositor.app 拖入「应用程序」文件夹。
             3. 由于属于个人开源构建，未购买商业开发者证书，首次启动需右键（或按住 Control 点击）Compositor.app 选择「打开」，并在弹窗中确认一次即可。
 
-            ### 致谢与开源协议
+            ### 致谢与开源来源
 
             - 原项目：https://github.com/robbietilton/Compositor
             - 原作者：Robbie Tilton
-            - 遵循原项目的 MIT 许可证。
+            - 开源协议：MIT License
+            - 中文补丁来源：https://github.com/robbietilton/Compositor/pull/274
+            - 中文补丁作者：Inefy-03 (https://github.com/Inefy-03)
           files: |
             DerivedData/Build/Products/Release/Compositor-macOS15-arm64.zip
         env:
