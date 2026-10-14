@@ -106,7 +106,12 @@ nonisolated enum RawImporter {
         var settings = RawDevelopSettings(temperature: filter.neutralTemperature, tint: filter.neutralTint)
         settings.noiseReduction = filter.isLuminanceNoiseReductionSupported ? filter.luminanceNoiseReductionAmount : 0
         settings.lensCorrection = filter.isLensCorrectionSupported && filter.isLensCorrectionEnabled
-        settings.highlightRecovery = filter.isHighlightRecoverySupported && filter.isHighlightRecoveryEnabled
+#if swift(>=6.2)
+        if #available(macOS 26.0, *) {
+            settings.highlightRecovery = filter.isHighlightRecoverySupported && filter.isHighlightRecoveryEnabled
+            settings.supportsHighlightRecovery = filter.isHighlightRecoverySupported
+        }
+#endif
         settings.asShotTemperature = settings.temperature
         settings.asShotTint = settings.tint
         settings.asShotNoiseReduction = settings.noiseReduction
@@ -114,7 +119,6 @@ nonisolated enum RawImporter {
         settings.asShotHighlightRecovery = settings.highlightRecovery
         settings.supportsNoiseReduction = filter.isLuminanceNoiseReductionSupported
         settings.supportsLensCorrection = filter.isLensCorrectionSupported
-        settings.supportsHighlightRecovery = filter.isHighlightRecoverySupported
         return settings
     }
 
@@ -142,7 +146,11 @@ nonisolated enum RawImporter {
         filter.boostAmount = settings.boost
         if settings.supportsNoiseReduction { filter.luminanceNoiseReductionAmount = settings.noiseReduction }
         if settings.supportsLensCorrection { filter.isLensCorrectionEnabled = settings.lensCorrection }
-        if settings.supportsHighlightRecovery { filter.isHighlightRecoveryEnabled = settings.highlightRecovery }
+#if swift(>=6.2)
+        if #available(macOS 26.0, *) {
+            if settings.supportsHighlightRecovery { filter.isHighlightRecoveryEnabled = settings.highlightRecovery }
+        }
+#endif
         guard let output = filter.outputImage else { return nil }
         if sixteenBit {
             return context.createCGImage(output, from: output.extent.integral, format: .RGBA16,
